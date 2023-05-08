@@ -43,11 +43,13 @@ def create_user():
     username = request.json.get('username')
     name = request.json.get('displayName')
     img = request.json.get('photoURL')
+    email = request.json.get('email')
+    password = request.json.get('password')
     print(img)
     user = User.query.filter_by(username=username).first()
     
     if user:
         return {'status': 'ok', 'message': 'Unable to create user. User already exists', 'user': user.to_dict()}
-    user = User(username=username, name=name, img=img)
+    user = User(username=username, name=name, img=img, email=email, password=password)
     user.create()
     return {'status': 'ok', 'user': user.to_dict()}
