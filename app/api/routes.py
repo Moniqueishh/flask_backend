@@ -31,23 +31,23 @@ def get_users():
         return {'status': 'not ok', 'message': 'Unable to get users'}
     return {'status': 'ok', 'users': [user.to_dict() for user in users]}
 
-@api.get('/users/<uid>')
-def get_user(uid):
-    user = User.query.filter_by(uid=uid).first()
+@api.get('/users/<username>')
+def get_user(username):
+    user = User.query.filter_by(username=username).first()
     if not user:
         return {'status': 'not ok', 'message': 'Unable to get user'}
     return {'status': 'ok', 'user': user.to_dict()}
 
 @api.post('/users')
 def create_user():
-    uid = request.json.get('uid')
+    username = request.json.get('username')
     name = request.json.get('displayName')
     img = request.json.get('photoURL')
     print(img)
-    user = User.query.filter_by(uid=uid).first()
+    user = User.query.filter_by(username=username).first()
     
     if user:
         return {'status': 'ok', 'message': 'Unable to create user. User already exists', 'user': user.to_dict()}
-    user = User(uid=uid, name=name, img=img)
+    user = User(username=username, name=name, img=img)
     user.create()
     return {'status': 'ok', 'user': user.to_dict()}
