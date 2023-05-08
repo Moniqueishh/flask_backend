@@ -17,6 +17,8 @@ savedTrips = db.Table(
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50), nullable=False, unique=True)
+    name = db.Column(db.String(128), nullable=False)
+    img = db.Column(db.String(500), nullable=True)
     email = db.Column(db.String, nullable=False, unique=True)
     password = db.Column(db.String, nullable=False)
     city = db.relationship('City',lazy=True)
@@ -25,15 +27,30 @@ class User(db.Model, UserMixin):
                             lazy='dynamic',
                             cascade= 'all')
 
-    def __init__(self, username, email, password):
+    def __init__(self, username, email, password, name, img):
         self.username = username
+        self.name = name
+        self.img = img
         self.email = email
         self.password = generate_password_hash(password) 
 
     def saveUser(self):
         db.session.add(self)
         db.session.commit()
+        return self
 
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+        return self
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'username': self.username,
+            'name': self.name,
+            'img': self.img,
+        }
 
 #User.id = relationship between user and saved trips
 # See pokemon(saved teams )
